@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
 class ArchitectureMap
 {
@@ -17,9 +17,9 @@ class ArchitectureMap
      * @param string $phpArchitecture
      * @return string
      */
-    public static function getNodeArchitecture($phpArchitecture)
+    public static function getNodeArchitecture(string $phpArchitecture): string
     {
         $lowercaseArchitecture = strtolower($phpArchitecture);
-        return isset(static::$map[$lowercaseArchitecture]) ? static::$map[$lowercaseArchitecture] : $phpArchitecture;
+        return static::$map[$lowercaseArchitecture] ?? $phpArchitecture;
     }
 }

@@ -1,7 +1,7 @@
 {
-    "name": "mariusbuescher/node-composer",
+    "name": "pantheon-se/node-composer",
     "type": "composer-plugin",
-    "description": "Installs composer nodejs or/and npm in vendor/",
+    "description": "Installs NodeJS, NPM, and/or Yarn into vendor/bin",
     "license": "MIT",
     "keywords": [
         "node.js",
@@ -10,26 +10,32 @@
         "frontend",
         "javascript"
     ],
-    "homepage": "https://github.com/mariusbuescher/node-composer",
+    "homepage": "https://github.com/pantheon-se/node-composer",
     "authors": [
         {
             "name": "Marius Büscher",
             "email": "marius.buescher@gmx.de"
+        },
+        {
+            "name": "Kyle Taylor",
+            "email": "kyletaylored@gmail.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "MariusBuescher\\NodeComposer\\": "src/"
+            "PantheonSalesEngineering\\NodeComposer\\": "src/"
         }
     },
     "require": {
         "php": ">=7.1",
         "composer/composer": "^1.4 || ^2.0",
         "composer-plugin-api": "^1.0 || ^2.0",
-        "symfony/process": "^2.7 || >=3.0",
-        "symfony/filesystem": ">=2.7"
+        "symfony/process": "^2.7 || ~3",
+        "symfony/filesystem": ">=2.7",
+        "ext-zip": "*",
+        "ext-json": "*"
     },
     "extra": {
-        "class": "MariusBuescher\\NodeComposer\\NodeComposerPlugin"
+        "class": "PantheonSalesEngineering\\NodeComposer\\NodeComposerPlugin"
     }
 }

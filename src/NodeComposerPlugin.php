@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
 
 use Composer\Composer;
@@ -10,10 +10,10 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\RemoteFilesystem;
-use MariusBuescher\NodeComposer\Exception\VersionVerificationException;
-use MariusBuescher\NodeComposer\Exception\NodeComposerConfigException;
-use MariusBuescher\NodeComposer\Installer\NodeInstaller;
-use MariusBuescher\NodeComposer\Installer\YarnInstaller;
+use PantheonSalesEngineering\NodeComposer\Exception\VersionVerificationException;
+use PantheonSalesEngineering\NodeComposer\Exception\NodeComposerConfigException;
+use PantheonSalesEngineering\NodeComposer\Installer\NodeInstaller;
+use PantheonSalesEngineering\NodeComposer\Installer\YarnInstaller;
 
 class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
 {
@@ -39,14 +39,17 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
 
         $extraConfig = $this->composer->getPackage()->getExtra();
 
-        if (!isset($extraConfig['mariusbuescher']['node-composer'])) {
+        if (!isset($extraConfig['pantheon-se']['node-composer'])) {
             throw new NodeComposerConfigException('You must configure the node composer plugin');
         }
 
-        $this->config = Config::fromArray($extraConfig['mariusbuescher']['node-composer']);
+        $this->config = Config::fromArray($extraConfig['pantheon-se']['node-composer']);
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return \array[][]
+     */
+    public static function getSubscribedEvents(): array
     {
         return array(
             ScriptEvents::POST_UPDATE_CMD => array(

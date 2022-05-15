@@ -1,21 +1,16 @@
-[![License](https://img.shields.io/packagist/l/mariusbuescher/node-composer)](LICENSE) [![Packagist Version](https://img.shields.io/packagist/v/mariusbuescher/node-composer)](https://packagist.org/packages/mariusbuescher/node-composer) [![Tests](https://github.com/mariusbuescher/node-composer/workflows/Tests/badge.svg?branch=master)](https://github.com/mariusbuescher/node-composer/actions?query=workflow%3ATests)
+[![License](https://img.shields.io/packagist/l/pantheon-se/node-composer)](LICENSE) [![Packagist Version](https://img.shields.io/packagist/v/pantheon-se/node-composer)](https://packagist.org/packages/pantheon-se/node-composer) [![Tests](https://github.com/pantheon-se/node-composer/workflows/Tests/badge.svg?branch=master)](https://github.com/pantheon-se/node-composer/actions?query=workflow%3ATests)
 
 # node-composer
 
-> composer plugin for a better frontend setup
+> Composer Plugin to implement asset compilation via Composer with Node.js.
 
-PHP projects mostly are Web-Applications. Many Web-Applications also need a frontend part which runs in the browser. In
-modern Web-Development there often a whole build-chain connected to the frontend, so you can compile e.g. your scss, build
-your JavaScript with webpack and optimize your images.
+Based on [node-composer by mariusbuescher](https://github.com/mariusbuescher/node-composer), this Composer plugin will install Node.js, NPM, and/or Yarn into your vendor/bin directory so they are available to use during your Composer builds. This plugin helps automate the download of the binaries which are linked to the bin-directory specified in your composer.json.
 
-This plugin provides a way to automatically download and installthe right version of node.js, npm and yarn. The binaries
-are linked to the bin-directory specified in your composer.json.
-
-After that your can use node, npm and yarn in your composer-scripts.
+Once installed, you can then use Node, NPM, and Yarn commands in your composer-scripts.
 
 ## Setup
 
-The setup is pretty easy. Simply install the plugin in specify the node-version in your composer.json extra configs.
+Simply install the plugin in specify the node-version in your composer.json extra configs.
 
 Example composer.json
 
@@ -24,20 +19,14 @@ Example composer.json
     "name": "my/project",
     "type": "project",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Marius Büscher",
-            "email": "marius.buescher@gmx.de"
-        }
-    ],
     "require": {
-        "mariusbuescher/node-composer": "*"
+        "pantheon-se/node-composer": "*"
     },
     "extra": {
-        "mariusbuescher": {
+        "pantheon-se": {
             "node-composer": {
-                "node-version": "4.8.3",
-                "yarn-version": "0.22.0"
+                "node-version": "16.15.0",
+                "yarn-version": "1.22.18"
             }
         }
     }
@@ -46,10 +35,12 @@ Example composer.json
 
 ## Configuration
 
-There are three parameters you can configure: The node version (`node-version`), the yarn version (`yarn-version`) and
-the download url template for the node.js binary archives (`node-download-url`).
+There are three parameters you can configure: 
+- Node version (`node-version`)
+- Yarn version (`yarn-version`)
+- The download url template for the Node.js binary archives (`node-download-url`).
 
-In the node download url the following parameters are replaced:
+In the Node download url, replace the following placeholders with your specific needs:
 
 - version: `${version}`
 - type of your os: `${osType}`
@@ -60,9 +51,8 @@ Example composer.json:
 
 ```json
 {
-    // ...
     "extra": {
-        "mariusbuescher": {
+        "pantheon-se": {
             "node-composer": {
                 "node-version": "6.11.0",
                 "yarn-version": "0.24.5",

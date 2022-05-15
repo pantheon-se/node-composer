@@ -1,11 +1,11 @@
 <?php
 
-namespace MariusBuescher\NodeComposer\Exception;
+namespace PantheonSalesEngineering\NodeComposer\Exception;
 
 /**
  * Exception when not possible to verify version
  *
- * @package MariusBuescher\NodeComposer\Exception
+ * @package PantheonSalesEngineering\NodeComposer\Exception
  */
 class VersionVerificationException extends \RuntimeException
 {
@@ -19,7 +19,7 @@ class VersionVerificationException extends \RuntimeException
      * @param int $code Error code
      * @param mixed $previous Previous error
      */
-    public function __construct($app, $neededVersion, $gotVersion, $code = 0, $previous = null)
+    public function __construct($app, $neededVersion, $gotVersion, int $code = 0, $previous = null)
     {
         parent::__construct(
             sprintf(

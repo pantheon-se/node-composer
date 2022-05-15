@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer\Exception;
+namespace PantheonSalesEngineering\NodeComposer\Exception;
 
 class NodeComposerConfigException extends \RuntimeException
 {

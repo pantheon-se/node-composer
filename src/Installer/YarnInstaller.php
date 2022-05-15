@@ -1,12 +1,12 @@
 <?php
 
-namespace MariusBuescher\NodeComposer\Installer;
+namespace PantheonSalesEngineering\NodeComposer\Installer;
 
 use Composer\IO\IOInterface;
 use InvalidArgumentException;
-use MariusBuescher\NodeComposer\BinLinker;
-use MariusBuescher\NodeComposer\InstallerInterface;
-use MariusBuescher\NodeComposer\NodeContext;
+use PantheonSalesEngineering\NodeComposer\BinLinker;
+use PantheonSalesEngineering\NodeComposer\InstallerInterface;
+use PantheonSalesEngineering\NodeComposer\NodeContext;
 use Symfony\Component\Process\Process;
 
 class YarnInstaller implements InstallerInterface
@@ -36,16 +36,11 @@ class YarnInstaller implements InstallerInterface
 
     /**
      * @param string $version
-     * @throws InvalidArgumentException
      * @return bool
+     *@throws InvalidArgumentException
      */
-    public function install($version)
+    public function install(string $version): bool
     {
-        if (!is_string($version)) {
-            throw new InvalidArgumentException(
-                sprintf('Version must be a string, %s given', gettype($version))
-            );
-        }
 
         $process = new Process(
             'npm install --global yarn@' . $version,
@@ -92,7 +87,7 @@ class YarnInstaller implements InstallerInterface
      * @param string $sourceDir
      * @param string $targetDir
      */
-    private function linkExecutables($sourceDir, $targetDir)
+    private function linkExecutables(string $sourceDir, string $targetDir)
     {
         $yarnPath = $this->context->getOsType() === 'win' ?
             realpath($sourceDir . DIRECTORY_SEPARATOR . 'yarn.cmd') :
@@ -118,7 +113,7 @@ class YarnInstaller implements InstallerInterface
     /**
      * @return string
      */
-    private function getNpmBinaryPath()
+    private function getNpmBinaryPath(): string
     {
         $process = new Process('npm -g bin', $this->context->getBinDir());
         $process->run();

@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
 use Composer\Util\Filesystem;
 use Composer\Util\ProcessExecutor;
@@ -10,7 +10,7 @@ use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 /**
  * Class to symlink bin files
  *
- * @package MariusBuescher\NodeComposer
+ * @package PantheonSalesEngineering\NodeComposer
  */
 class BinLinker
 {
@@ -41,7 +41,7 @@ class BinLinker
      * @param string $vendorBinDir Where all bin files should be kept?
      * @param string $osType OS type
      */
-    public function __construct($vendorBinDir, $osType)
+    public function __construct(string $vendorBinDir, string $osType)
     {
         $this->vendorBinDir = $vendorBinDir;
         $this->osType = strtolower($osType);
@@ -54,7 +54,7 @@ class BinLinker
      * @param string $from Path from where to create symlink
      * @param string $to Path to where create symlink
      */
-    public function linkBin($from, $to)
+    public function linkBin(string $from, string $to)
     {
         if ($this->osType === 'win') {
             $this->filesystem->dumpFile(
@@ -73,7 +73,7 @@ class BinLinker
      *
      * @return string
      */
-    protected function generateBatchCode($from)
+    protected function generateBatchCode(string $from): string
     {
         $binPath = dirname(
             $this->filesystem->makePathRelative($from, $this->vendorBinDir)
@@ -97,7 +97,8 @@ class BinLinker
      *
      * @return bool
      */
-    public function unlinkBin($to) {
+    public function unlinkBin(string $to): bool
+    {
         if ($this->osType === 'win') {
             if ($this->filesystem->exists($to . '.bat')) {
                 $this->filesystem->remove($to . '.bat');

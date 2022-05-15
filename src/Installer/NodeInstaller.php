@@ -1,16 +1,14 @@
 <?php
 
-namespace MariusBuescher\NodeComposer\Installer;
+namespace PantheonSalesEngineering\NodeComposer\Installer;
 
-use Composer\Installer\BinaryInstaller;
 use Composer\IO\IOInterface;
-use Composer\Package\Package;
 use Composer\Util\RemoteFilesystem;
 use InvalidArgumentException;
-use MariusBuescher\NodeComposer\ArchitectureMap;
-use MariusBuescher\NodeComposer\BinLinker;
-use MariusBuescher\NodeComposer\InstallerInterface;
-use MariusBuescher\NodeComposer\NodeContext;
+use PantheonSalesEngineering\NodeComposer\ArchitectureMap;
+use PantheonSalesEngineering\NodeComposer\BinLinker;
+use PantheonSalesEngineering\NodeComposer\InstallerInterface;
+use PantheonSalesEngineering\NodeComposer\NodeContext;
 use Symfony\Component\Process\Process;
 
 class NodeInstaller implements InstallerInterface
@@ -40,13 +38,13 @@ class NodeInstaller implements InstallerInterface
      * @param IOInterface $io
      * @param RemoteFilesystem $remoteFs
      * @param NodeContext $context
-     * @param string $downloadUriTemplate
+     * @param string|null $downloadUriTemplate
      */
     public function __construct(
         IOInterface $io,
         RemoteFilesystem $remoteFs,
         NodeContext $context,
-        $downloadUriTemplate = null
+        string $downloadUriTemplate = null
     ) {
         $this->io = $io;
         $this->remoteFs = $remoteFs;
@@ -58,16 +56,11 @@ class NodeInstaller implements InstallerInterface
 
     /**
      * @param string $version
-     * @throws InvalidArgumentException
      * @return bool
+     *@throws InvalidArgumentException
      */
-    public function install($version)
+    public function install(string $version): bool
     {
-        if (!is_string($version)) {
-            throw new InvalidArgumentException(
-                sprintf('Version must be a string, %s given', gettype($version))
-            );
-        }
 
         $this->downloadExecutable($version);
 
@@ -95,7 +88,7 @@ class NodeInstaller implements InstallerInterface
     /**
      * @param string $version
      */
-    private function downloadExecutable($version)
+    private function downloadExecutable(string $version)
     {
         $downloadUri = $this->buildDownloadLink($version);
 
@@ -126,7 +119,7 @@ class NodeInstaller implements InstallerInterface
      * @param string $version
      * @return string
      */
-    private function buildDownloadLink($version)
+    private function buildDownloadLink(string $version): string
     {
         return preg_replace(
             array(
@@ -149,7 +142,7 @@ class NodeInstaller implements InstallerInterface
      * @param string $source
      * @param string $targetDir
      */
-    private function unpackExecutable($source, $targetDir)
+    private function unpackExecutable(string $source, string $targetDir)
     {
         if (realpath($targetDir)) {
             $files = glob($targetDir . DIRECTORY_SEPARATOR . '**' . DIRECTORY_SEPARATOR . '*');
@@ -171,7 +164,7 @@ class NodeInstaller implements InstallerInterface
      * @param string $source
      * @param string $targetDir
      */
-    private function unzip($source, $targetDir)
+    private function unzip(string $source, string $targetDir)
     {
         $zip = new \ZipArchive();
         $res = $zip->open($source);
@@ -190,7 +183,7 @@ class NodeInstaller implements InstallerInterface
      * @param string $source
      * @param string $targetDir
      */
-    private function untar($source, $targetDir)
+    private function untar(string $source, string $targetDir)
     {
         $process = new Process(
             "tar -xvf ".$source." -C ".escapeshellarg($targetDir)." --strip 1"
@@ -212,7 +205,7 @@ class NodeInstaller implements InstallerInterface
      * @param string $sourceDir
      * @param string $targetDir
      */
-    private function linkExecutables($sourceDir, $targetDir)
+    private function linkExecutables(string $sourceDir, string $targetDir)
     {
         $nodePath = $this->context->getOsType() === 'win' ?
             realpath($sourceDir . DIRECTORY_SEPARATOR . 'node.exe') :

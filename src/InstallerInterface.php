@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
 
 interface InstallerInterface
@@ -9,7 +9,7 @@ interface InstallerInterface
      * @param string $version
      * @return bool
      */
-    public function install($version);
+    public function install(string $version): bool;
 
     /**
      * @return string|false

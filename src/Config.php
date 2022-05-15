@@ -1,8 +1,8 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
-use MariusBuescher\NodeComposer\Exception\NodeComposerConfigException;
+use PantheonSalesEngineering\NodeComposer\Exception\NodeComposerConfigException;
 
 class Config
 {
@@ -32,13 +32,13 @@ class Config
      * @param array $conf
      * @return Config
      */
-    public static function fromArray(array $conf)
+    public static function fromArray(array $conf): Config
     {
         $self = new self();
 
         $self->nodeVersion = $conf['node-version'];
-        $self->nodeDownloadUrl = isset($conf['node-download-url']) ? $conf['node-download-url'] : null;
-        $self->yarnVersion = isset($conf['yarn-version']) ? $conf['yarn-version'] : null;
+        $self->nodeDownloadUrl = $conf['node-download-url'] ?? null;
+        $self->yarnVersion = $conf['yarn-version'] ?? null;
 
         if ($self->nodeVersion === null) {
             throw new NodeComposerConfigException('You must specify a node-version');
@@ -51,7 +51,7 @@ class Config
     /**
      * @return string
      */
-    public function getNodeVersion()
+    public function getNodeVersion(): string
     {
         return $this->nodeVersion;
     }
@@ -59,7 +59,7 @@ class Config
     /**
      * @return string
      */
-    public function getYarnVersion()
+    public function getYarnVersion(): string
     {
         return $this->yarnVersion;
     }
@@ -67,7 +67,7 @@ class Config
     /**
      * @return string
      */
-    public function getNodeDownloadUrl()
+    public function getNodeDownloadUrl(): string
     {
         return $this->nodeDownloadUrl;
     }

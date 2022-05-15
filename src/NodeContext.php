@@ -1,6 +1,6 @@
 <?php
 
-namespace MariusBuescher\NodeComposer;
+namespace PantheonSalesEngineering\NodeComposer;
 
 
 class NodeContext
@@ -29,14 +29,14 @@ class NodeContext
      * NodeContext constructor.
      * @param string $vendorDir
      * @param string $binDir
-     * @param string $osType
-     * @param string $systemArchitecture
+     * @param string|null $osType
+     * @param string|null $systemArchitecture
      */
     public function __construct(
-        $vendorDir,
-        $binDir,
-        $osType = null,
-        $systemArchitecture = null
+        string $vendorDir,
+        string $binDir,
+        string $osType = null,
+        string $systemArchitecture = null
     ) {
         $this->vendorDir = $vendorDir;
         $this->binDir = $binDir;
@@ -51,7 +51,7 @@ class NodeContext
     /**
      * @return string
      */
-    public function getOsType()
+    public function getOsType(): ?string
     {
         return $this->osType;
     }
@@ -59,7 +59,7 @@ class NodeContext
     /**
      * @return string
      */
-    public function getSystemArchitecture()
+    public function getSystemArchitecture(): string
     {
         return $this->systemArchitecture;
     }
@@ -67,7 +67,7 @@ class NodeContext
     /**
      * @return string
      */
-    public function getVendorDir()
+    public function getVendorDir(): string
     {
         return $this->vendorDir;
     }
@@ -75,7 +75,7 @@ class NodeContext
     /**
      * @return string
      */
-    public function getBinDir()
+    public function getBinDir(): string
     {
         return $this->binDir;
     }
