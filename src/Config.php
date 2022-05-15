@@ -51,7 +51,7 @@ class Config
     /**
      * @return string
      */
-    public function getNodeVersion(): string
+    public function getNodeVersion()
     {
         return $this->nodeVersion;
     }
@@ -59,7 +59,7 @@ class Config
     /**
      * @return string
      */
-    public function getYarnVersion(): string
+    public function getYarnVersion()
     {
         return $this->yarnVersion;
     }
@@ -67,7 +67,7 @@ class Config
     /**
      * @return string
      */
-    public function getNodeDownloadUrl(): string
+    public function getNodeDownloadUrl()
     {
         return $this->nodeDownloadUrl;
     }
