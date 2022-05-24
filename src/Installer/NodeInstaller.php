@@ -4,12 +4,19 @@ namespace PantheonSalesEngineering\NodeComposer\Installer;
 
 use Composer\IO\IOInterface;
 use Composer\Util\RemoteFilesystem;
+use Exception;
+use FilesystemIterator;
 use InvalidArgumentException;
 use PantheonSalesEngineering\NodeComposer\ArchitectureMap;
 use PantheonSalesEngineering\NodeComposer\BinLinker;
 use PantheonSalesEngineering\NodeComposer\InstallerInterface;
 use PantheonSalesEngineering\NodeComposer\NodeContext;
+use Phar;
+use PharData;
+use RecursiveDirectoryIterator;
+use RuntimeException;
 use Symfony\Component\Process\Process;
+use ZipArchive;
 
 class NodeInstaller implements InstallerInterface
 {
@@ -57,7 +64,7 @@ class NodeInstaller implements InstallerInterface
     /**
      * @param string $version
      * @return bool
-     *@throws InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function install(string $version): bool
     {
@@ -144,35 +151,43 @@ class NodeInstaller implements InstallerInterface
     private function unpackExecutable(string $source, string $targetDir)
     {
         if (realpath($targetDir)) {
-            $files = glob($targetDir . DIRECTORY_SEPARATOR . '**' . DIRECTORY_SEPARATOR . '*');
-            foreach ($files as $file) {
-                unlink($file);
-            }
+            $this->removeDirectory($targetDir);
         } else {
             mkdir($targetDir);
         }
 
-        if (preg_match('/\.zip$/', $source) === 1) {
-            $this->unzip($source, $targetDir);
-        } else {
-            $this->untar($source, $targetDir);
-        }
+        $is_zip = (preg_match('/\.zip$/', $source) === 1);
+        $this->unzip($source, $targetDir, $is_zip);
     }
 
     /**
+     * Extract executable from compressed file.
      * @param string $source
      * @param string $targetDir
+     * @param bool $is_zip
      */
-    private function unzip(string $source, string $targetDir)
+    private function unzip(string $source, string $targetDir, bool $is_zip = true)
     {
-        $zip = new \ZipArchive();
-        $res = $zip->open($source);
-        if ($res === true) {
-            // extract it to the path we determined above
+
+        try {
+            // If not a zip file, convert tar.gz to zip.
+            if (!$is_zip) {
+                $tar = new PharData($source, FilesystemIterator::SKIP_DOTS);
+                $tar->convertToData(Phar::ZIP);
+                unlink($source);
+                $source = str_replace('tar.gz', 'zip', $source);
+                $targetDir = str_replace('/' . $tar->getFilename(), '', $targetDir);
+            }
+
+            // Unzip
+            $zip = new ZipArchive();
+            $zip->open($source);
+            // Extract it to the path we determined above
             $zip->extractTo($targetDir);
             $zip->close();
-        } else {
-            throw new \RuntimeException(sprintf('Unable to extract file %s', $source));
+
+        } catch (Exception $e) {
+            throw new RuntimeException(sprintf('Unable to extract file %s: %s', $source, $e->getMessage()));
         }
 
         unlink($source);
@@ -184,20 +199,32 @@ class NodeInstaller implements InstallerInterface
      */
     private function untar(string $source, string $targetDir)
     {
-        $process = new Process(
-            ["tar -xvf ".$source." -C ".escapeshellarg($targetDir)." --strip 1"]
-        );
-        $process->run();
+        try {
+            // Decompress from gz, extract to path.
+            $tar = new PharData($source);
+            $tar->decompress();
+            $tar->extractTo($targetDir, $tar->getFilename());
 
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException(sprintf(
-                'An error occurred while extracting NodeJS (%s) to %s',
-                $source,
-                $targetDir
-            ));
+        } catch (Exception $e) {
+            throw new RuntimeException(sprintf('Unable to extract file %s: %s', $source, $e->getMessage()));
         }
 
         unlink($source);
+    }
+
+    /**
+     * @param $path
+     * @return void
+     */
+    private function removeDirectory($path) {
+
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            is_dir($file) ? $this->removeDirectory($file) : unlink($file);
+        }
+        rmdir($path);
+
+        return;
     }
 
     /**
@@ -217,6 +244,7 @@ class NodeInstaller implements InstallerInterface
         );
         $fs->unlinkBin($nodeLink);
         $fs->linkBin($nodePath, $nodeLink);
+        chmod($nodePath, "0755");
 
         $npmPath = $this->context->getOsType() === 'win' ?
             realpath($sourceDir . DIRECTORY_SEPARATOR . 'npm.cmd') :
@@ -225,5 +253,6 @@ class NodeInstaller implements InstallerInterface
 
         $fs->unlinkBin($npmLink);
         $fs->linkBin($npmPath, $npmLink);
+        chmod($npmPath, "0755");
     }
 }

@@ -82,7 +82,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
             strpos($installedNodeVersion, 'v' . $this->config->getNodeVersion()) === false
         ) {
             $this->io->write(sprintf(
-                'Installing node.js v%s',
+                'Installing Node.js v%s',
                 $this->config->getNodeVersion()
             ));
 
@@ -94,12 +94,13 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
                 throw new VersionVerificationException('nodejs', $this->config->getNodeVersion(), $installedNodeVersion);
             } else {
                 $this->io->overwrite(sprintf(
-                    'node.js v%s installed',
+                    'Node.js v%s installed',
                     $this->config->getNodeVersion()
                 ));
             }
         }
 
+        // Validate Yarn
         if ($this->config->getYarnVersion() !== null) {
             $yarnInstaller = new YarnInstaller(
                 $this->io,
@@ -113,7 +114,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
                 strpos($installedYarnVersion, $this->config->getYarnVersion()) === false
             ) {
                 $this->io->write(sprintf(
-                    'Installing yarn v%s',
+                    'Installing Yarn v%s',
                     $this->config->getYarnVersion()
                 ));
 
@@ -125,7 +126,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
                     throw new VersionVerificationException('yarn', $this->config->getYarnVersion(), $installedYarnVersion);
                 } else {
                     $this->io->write(sprintf(
-                        'node.js v%s installed',
+                        'Yarn v%s installed',
                         $this->config->getNodeVersion()
                     ));
                 }
