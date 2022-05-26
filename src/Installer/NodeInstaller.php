@@ -82,12 +82,14 @@ class NodeInstaller implements InstallerInterface
 
         $process = new Process(["node --version"], $this->context->getBinDir());
         $process->run();
+        $result = $process->isSuccessful();
+        $error = $process->getErrorOutput();
 
-        if ($process->isSuccessful()) {
+        if ($result) {
             $output = explode("\n", $process->getIncrementalOutput());
             return $output[0];
         } else {
-            return false;
+            return $error;
         }
     }
 
@@ -216,15 +218,33 @@ class NodeInstaller implements InstallerInterface
      * @param $path
      * @return void
      */
-    private function removeDirectory($path) {
+    private function removeDirectory($path): void
+    {
+        // Check for files
+        if (is_file($path)) {
 
-        $files = glob($path . '/*');
-        foreach ($files as $file) {
-            is_dir($file) ? $this->removeDirectory($file) : unlink($file);
+            // If it is file then remove by
+            // using unlink function
+            unlink($path);
         }
-        rmdir($path);
 
-        return;
+        // If it is a directory.
+        elseif (is_dir($path)) {
+
+            // Get the list of the files in this
+            // directory
+            $scan = glob(rtrim($path, '/').'/*');
+
+            // Loop through the list of files
+            foreach($scan as $index=>$file_path) {
+
+                // Call recursive function
+                $this->removeDirectory($file_path);
+            }
+
+            // Remove the directory itself
+            @rmdir($path);
+        }
     }
 
     /**
@@ -244,7 +264,6 @@ class NodeInstaller implements InstallerInterface
         );
         $fs->unlinkBin($nodeLink);
         $fs->linkBin($nodePath, $nodeLink);
-        chmod($nodePath, "0755");
 
         $npmPath = $this->context->getOsType() === 'win' ?
             realpath($sourceDir . DIRECTORY_SEPARATOR . 'npm.cmd') :
@@ -253,6 +272,5 @@ class NodeInstaller implements InstallerInterface
 
         $fs->unlinkBin($npmLink);
         $fs->linkBin($npmPath, $npmLink);
-        chmod($npmPath, "0755");
     }
 }

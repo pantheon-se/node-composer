@@ -89,9 +89,10 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
             $nodeInstaller->install($this->config->getNodeVersion());
 
             $installedNodeVersion = $nodeInstaller->isInstalled();
-            if (strpos($installedNodeVersion, 'v' . $this->config->getNodeVersion()) === false) {
+            $nodeVersion = $this->config->getNodeVersion();
+            if (strpos($installedNodeVersion, 'v' . $nodeVersion) === false) {
                 $this->io->write(array_merge(['Bin files:'], glob($context->getBinDir() . '/*.*')), true, IOInterface::VERBOSE);
-                throw new VersionVerificationException('nodejs', $this->config->getNodeVersion(), $installedNodeVersion);
+                throw new VersionVerificationException('Node.js', $this->config->getNodeVersion(), $installedNodeVersion);
             } else {
                 $this->io->overwrite(sprintf(
                     'Node.js v%s installed',

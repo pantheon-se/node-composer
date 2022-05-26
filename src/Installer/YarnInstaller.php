@@ -43,7 +43,7 @@ class YarnInstaller implements InstallerInterface
     {
 
         $process = new Process(
-            'npm install --global yarn@' . $version,
+            ['npm install --global yarn@'. $version],
             $this->context->getBinDir()
         );
         $process->setIdleTimeout(null);
@@ -70,7 +70,7 @@ class YarnInstaller implements InstallerInterface
 
     public function isInstalled()
     {
-        $process = new Process("yarn --version", $this->context->getBinDir());
+        $process = new Process(["yarn --version"], $this->context->getBinDir());
         $process->setIdleTimeout(null);
         $process->setTimeout(null);
         $process->run();
@@ -115,7 +115,7 @@ class YarnInstaller implements InstallerInterface
      */
     private function getNpmBinaryPath(): string
     {
-        $process = new Process('npm -g bin', $this->context->getBinDir());
+        $process = new Process(['npm -g bin'], $this->context->getBinDir());
         $process->run();
 
         if (!$process->isSuccessful()) {
