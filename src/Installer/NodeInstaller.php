@@ -199,16 +199,22 @@ class NodeInstaller implements InstallerInterface
      * @param string $source
      * @param string $targetDir
      */
-    private function untar(string $source, string $targetDir)
+    private function untar($source, $targetDir)
     {
-        try {
-            // Decompress from gz, extract to path.
-            $tar = new PharData($source);
-            $tar->decompress();
-            $tar->extractTo($targetDir, $tar->getFilename());
+        $process = new Process(
+            ["tar -xvf ".$source." -C ".escapeshellarg($targetDir)." --strip 1"]
+        );
+        $process->run();
+        $result = $process->isSuccessful();
+        $error = $process->getErrorOutput();
 
-        } catch (Exception $e) {
-            throw new RuntimeException(sprintf('Unable to extract file %s: %s', $source, $e->getMessage()));
+        if (!$result) {
+            throw new \RuntimeException(sprintf(
+                'An error occurred while extracting NodeJS (%s) to %s: %s',
+                $source,
+                $targetDir,
+                $error
+            ));
         }
 
         unlink($source);
