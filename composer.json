@@ -1,7 +1,7 @@
 {
     "name": "pantheon-se/node-composer",
     "type": "composer-plugin",
-    "description": "Installs NodeJS, NPM, and/or Yarn into vendor/bin",
+    "description": "Installs Node.js, NPM, and Yarn into vendor/bin",
     "license": "MIT",
     "keywords": [
         "node.js",
