@@ -10,10 +10,12 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\RemoteFilesystem;
+use Exception;
 use PantheonSalesEngineering\NodeComposer\Exception\VersionVerificationException;
 use PantheonSalesEngineering\NodeComposer\Exception\NodeComposerConfigException;
 use PantheonSalesEngineering\NodeComposer\Installer\NodeInstaller;
 use PantheonSalesEngineering\NodeComposer\Installer\YarnInstaller;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
 {
@@ -40,7 +42,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         $extraConfig = $this->composer->getPackage()->getExtra();
 
         if (!isset($extraConfig['pantheon-se']['node-composer'])) {
-            throw new NodeComposerConfigException('You must configure the node composer plugin');
+            throw new NodeComposerConfigException(sprintf('You must configure the Node Composer plugin. See setup instructions at: %s', 'https://github.com/pantheon-se/node-composer'));
         }
 
         $this->config = Config::fromArray($extraConfig['pantheon-se']['node-composer']);
@@ -51,16 +53,19 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return array(
-            ScriptEvents::POST_UPDATE_CMD => array(
-                array('onPostUpdate', 1)
-            ),
-            ScriptEvents::POST_INSTALL_CMD => array(
-                array('onPostUpdate', 1)
-            )
-        );
+        return [
+            ScriptEvents::POST_UPDATE_CMD => [
+                ['onPostUpdate', 1]
+            ],
+            ScriptEvents::POST_INSTALL_CMD => [
+                ['onPostUpdate', 1]
+            ]
+        ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function onPostUpdate(Event $event)
     {
         $context = new NodeContext(
@@ -72,66 +77,23 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
             $this->io,
             new RemoteFilesystem($this->io, $this->composer->getConfig()),
             $context,
+            $this->config->getNodeVersion(),
+            'node',
             $this->config->getNodeDownloadUrl()
         );
-
-        $installedNodeVersion = $nodeInstaller->isInstalled();
-
-        if (
-            $installedNodeVersion === false ||
-            strpos($installedNodeVersion, 'v' . $this->config->getNodeVersion()) === false
-        ) {
-            $this->io->write(sprintf(
-                'Installing Node.js v%s',
-                $this->config->getNodeVersion()
-            ));
-
-            $nodeInstaller->install($this->config->getNodeVersion());
-
-            $installedNodeVersion = $nodeInstaller->isInstalled();
-            $nodeVersion = $this->config->getNodeVersion();
-            if (strpos($installedNodeVersion, 'v' . $nodeVersion) === false) {
-                $this->io->write(array_merge(['Bin files:'], glob($context->getBinDir() . '/*.*')), true, IOInterface::VERBOSE);
-                throw new VersionVerificationException('Node.js', $this->config->getNodeVersion(), $installedNodeVersion);
-            } else {
-                $this->io->overwrite(sprintf(
-                    'Node.js v%s installed',
-                    $this->config->getNodeVersion()
-                ));
-            }
-        }
+        $nodeInstaller->init();
 
         // Validate Yarn
         if ($this->config->getYarnVersion() !== null) {
             $yarnInstaller = new YarnInstaller(
                 $this->io,
-                $context
+                new RemoteFilesystem($this->io, $this->composer->getConfig()),
+                $context,
+                $this->config->getYarnVersion(),
+                'yarn'
             );
+            $yarnInstaller->init();
 
-            $installedYarnVersion = $yarnInstaller->isInstalled();
-
-            if (
-                $installedYarnVersion === false ||
-                strpos($installedYarnVersion, $this->config->getYarnVersion()) === false
-            ) {
-                $this->io->write(sprintf(
-                    'Installing Yarn v%s',
-                    $this->config->getYarnVersion()
-                ));
-
-                $yarnInstaller->install($this->config->getYarnVersion());
-
-                $installedYarnVersion = $yarnInstaller->isInstalled();
-                if (strpos($installedYarnVersion, $this->config->getYarnVersion()) === false) {
-                    $this->io->write(array_merge(['Bin files:'], glob($context->getBinDir() . '/*.*')), true, IOInterface::VERBOSE);
-                    throw new VersionVerificationException('yarn', $this->config->getYarnVersion(), $installedYarnVersion);
-                } else {
-                    $this->io->write(sprintf(
-                        'Yarn v%s installed',
-                        $this->config->getNodeVersion()
-                    ));
-                }
-            }
         }
     }
 

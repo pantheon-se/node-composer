@@ -3,51 +3,42 @@
 namespace PantheonSalesEngineering\NodeComposer\Installer;
 
 use Composer\IO\IOInterface;
+use Composer\Util\RemoteFilesystem;
 use InvalidArgumentException;
 use PantheonSalesEngineering\NodeComposer\BinLinker;
-use PantheonSalesEngineering\NodeComposer\InstallerInterface;
 use PantheonSalesEngineering\NodeComposer\NodeContext;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class YarnInstaller implements InstallerInterface
+class YarnInstaller extends BaseInstaller
 {
-    /**
-     * @var IOInterface
-     */
-    private $io;
-
-    /**
-     * @var NodeContext
-     */
-    private $context;
-
     /**
      * NodeDownloader constructor.
      * @param IOInterface $io
+     * @param RemoteFilesystem $remoteFs
      * @param NodeContext $context
+     * @param string $version
+     * @param string $executable
+     * @param string|null $downloadUriTemplate
      */
     public function __construct(
         IOInterface $io,
-        NodeContext $context
+        RemoteFilesystem $remoteFs,
+        NodeContext $context,
+        string $version,
+        string $executable,
+        string $downloadUriTemplate = null
     ) {
-        $this->io = $io;
-        $this->context = $context;
+        parent::__construct($io, $remoteFs, $context, $version, $executable, $downloadUriTemplate);
     }
 
     /**
-     * @param string $version
      * @return bool
-     *@throws InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function install(string $version): bool
+    public function install(): bool
     {
-
-        $process = new Process(
-            ['npm install --global yarn@'. $version],
-            $this->context->getBinDir()
-        );
-        $process->setIdleTimeout(null);
-        $process->setTimeout(null);
+        $process = new Process(['npm install --global yarn@'. $this->version], $this->context->getBinDir());
         $process->run(function ($type, $buffer) {
             if (Process::ERR === $type) {
                 $this->io->writeError($buffer, true, IOInterface::DEBUG);
@@ -56,29 +47,17 @@ class YarnInstaller implements InstallerInterface
             }
         });
 
+        // If process broke, throw error.
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException('Could not install yarn');
+            throw new ProcessFailedException($process);
         }
 
-        $sourceDir = $this->getNpmBinaryPath();
-        $this->io->write('NPM found at: ' . $sourceDir, true, IOInterface::VERBOSE);
-
-        $this->linkExecutables($sourceDir, $this->context->getBinDir());
-
-        return true;
-    }
-
-    public function isInstalled()
-    {
-        $process = new Process(["yarn --version"], $this->context->getBinDir());
-        $process->setIdleTimeout(null);
-        $process->setTimeout(null);
-        $process->run();
-
-        if ($process->isSuccessful()) {
-            $output = explode("\n", $process->getIncrementalOutput());
-            return $output[0];
-        } else {
+        try {
+            $sourceDir = $this->getNpmBinaryPath();
+            $this->io->write('NPM found at: ' . $sourceDir, true, IOInterface::VERBOSE);
+            $this->linkExecutables($sourceDir, $this->context->getBinDir());
+            return true;
+        } catch (ProcessFailedException $exception) {
             return false;
         }
     }
@@ -112,17 +91,20 @@ class YarnInstaller implements InstallerInterface
 
     /**
      * @return string
+     * @throws ProcessFailedException
      */
     private function getNpmBinaryPath(): string
     {
-        $process = new Process(['npm -g bin'], $this->context->getBinDir());
+        $process = new Process(['npm', '-g bin'], $this->context->getBinDir());
         $process->run();
 
+        // If process broke, throw error.
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException('npm must be installed');
-        } else {
-            $output = explode("\n", $process->getIncrementalOutput());
-            return $output[0];
+            throw new ProcessFailedException($process);
         }
+
+        // Return bin path
+        $output = explode("\n", $process->getIncrementalOutput());
+        return $output[0];
     }
 }

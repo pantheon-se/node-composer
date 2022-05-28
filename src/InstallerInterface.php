@@ -6,13 +6,18 @@ namespace PantheonSalesEngineering\NodeComposer;
 interface InstallerInterface
 {
     /**
-     * @param string $version
      * @return bool
      */
-    public function install(string $version): bool;
+    public function install(): bool;
 
     /**
-     * @return string|false
+     * @return bool
      */
-    public function isInstalled();
+    public function isInstalled(): bool;
+
+    /**
+     * @param string $version
+     * @return bool|string
+     */
+    public function versionMatches(string $version);
 }
