@@ -76,10 +76,11 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         );
 
         $installedNodeVersion = $nodeInstaller->isInstalled();
+        $nodeVersion = 'v' . $this->config->getNodeVersion();
 
         if (
             $installedNodeVersion === false ||
-            strpos($installedNodeVersion, 'v' . $this->config->getNodeVersion()) === false
+            strpos($installedNodeVersion, $nodeVersion) === false
         ) {
             $this->io->write(sprintf(
                 'Installing Node.js v%s',
@@ -89,10 +90,9 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
             $nodeInstaller->install($this->config->getNodeVersion());
 
             $installedNodeVersion = $nodeInstaller->isInstalled();
-            $nodeVersion = $this->config->getNodeVersion();
-            if (strpos($installedNodeVersion, 'v' . $nodeVersion) === false) {
+            if (strpos($installedNodeVersion, $nodeVersion) === false) {
                 $this->io->write(array_merge(['Bin files:'], glob($context->getBinDir() . '/*.*')), true, IOInterface::VERBOSE);
-                throw new VersionVerificationException('Node.js', $this->config->getNodeVersion(), $installedNodeVersion);
+                throw new VersionVerificationException('Node.js', $nodeVersion, $installedNodeVersion);
             } else {
                 $this->io->overwrite(sprintf(
                     'Node.js v%s installed',

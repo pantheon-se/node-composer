@@ -13,7 +13,6 @@ use PantheonSalesEngineering\NodeComposer\InstallerInterface;
 use PantheonSalesEngineering\NodeComposer\NodeContext;
 use Phar;
 use PharData;
-use RecursiveDirectoryIterator;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 use ZipArchive;
@@ -210,7 +209,7 @@ class NodeInstaller implements InstallerInterface
 
         if (!$result) {
             throw new \RuntimeException(sprintf(
-                'An error occurred while extracting NodeJS (%s) to %s: %s',
+                'An error occurred while extracting Node.js (%s) to %s: %s',
                 $source,
                 $targetDir,
                 $error
