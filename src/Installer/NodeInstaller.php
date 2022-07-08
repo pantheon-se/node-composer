@@ -185,7 +185,7 @@ class NodeInstaller implements InstallerInterface
     private function untar(string $source, string $targetDir)
     {
         $process = new Process(
-            ["tar -xvf ".$source." -C ".escapeshellarg($targetDir)." --strip 1"]
+            ["tar", "-xvf ".$source." -C ".escapeshellarg($targetDir)." --strip 1"]
         );
         $process->run();
 
