@@ -190,10 +190,12 @@ class NodeInstaller implements InstallerInterface
         $process->run();
 
         if (!$process->isSuccessful()) {
+            $error = $process->getErrorOutput();
             throw new \RuntimeException(sprintf(
-                'An error occurred while extracting NodeJS (%s) to %s',
+                'An error occurred while extracting NodeJS (%s) to %s. Error: %s',
                 $source,
-                $targetDir
+                $targetDir,
+                $error
             ));
         }
 
