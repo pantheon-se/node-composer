@@ -15,13 +15,13 @@ class NodeInstaller extends Installer
      * @param IOInterface $io
      * @param RemoteFilesystem $remoteFs
      * @param NodeContext $context
-     * @param string $downloadUriTemplate
+     * @param string|null $downloadUriTemplate
      */
     public function __construct(
         IOInterface $io,
         RemoteFilesystem $remoteFs,
         NodeContext $context,
-        string $downloadUriTemplate
+        string $downloadUriTemplate = null
     ) {
         // Declare command to check if installed.
         $installedCommand = ["node", "--version"];
