@@ -45,7 +45,14 @@ class NodeContext
         if (!$this->osType) {
             $this->osType = stripos(PHP_OS, 'WIN') === 0 ? 'win' : strtolower(PHP_OS);
         }
+
         $this->systemArchitecture = is_string($systemArchitecture) ? $systemArchitecture : php_uname('m');
+
+        // Arch distributions use arm64 node packages.
+        // https://github.com/nodejs/nodejs.org/issues/2661
+        if ($this->systemArchitecture == 'aarch64') {
+            $this->systemArchitecture = 'arm64';
+        }
     }
 
     /**
