@@ -15,17 +15,19 @@ class NodeInstaller extends Installer
      * @param IOInterface $io
      * @param RemoteFilesystem $remoteFs
      * @param NodeContext $context
+     * @param string $downloadUriTemplate
      */
     public function __construct(
         IOInterface $io,
         RemoteFilesystem $remoteFs,
-        NodeContext $context
+        NodeContext $context,
+        string $downloadUriTemplate
     ) {
         // Declare command to check if installed.
         $installedCommand = ["node", "--version"];
 
         // Declare download template.
-        $downloadUriTemplate = 'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
+        $downloadUriTemplate = (!empty($downloadUriTemplate)) ? $downloadUriTemplate : 'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
 
         // Setup paths for executables.
         $executableList = [
