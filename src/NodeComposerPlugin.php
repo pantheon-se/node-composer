@@ -51,18 +51,22 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return array(
-            ScriptEvents::POST_UPDATE_CMD => array(
-                array('onPostUpdate', 1)
-            ),
-            ScriptEvents::POST_INSTALL_CMD => array(
-                array('onPostUpdate', 1)
-            )
-        );
+        return [
+            ScriptEvents::POST_UPDATE_CMD => [
+                ['onPostUpdate', 1]
+            ],
+            ScriptEvents::POST_INSTALL_CMD => [
+                ['onPostUpdate', 1]
+            ]
+        ];
     }
 
+    /**
+     * @throws \Exception
+     */
     public function onPostUpdate(Event $event)
     {
+        $fs = new RemoteFilesystem($this->io, $this->composer->getConfig());
         $context = new NodeContext(
             $this->composer->getConfig()->get('vendor-dir'),
             $this->composer->getConfig()->get('bin-dir')
@@ -70,7 +74,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
 
         $nodeInstaller = new NodeInstaller(
             $this->io,
-            new RemoteFilesystem($this->io, $this->composer->getConfig()),
+            $fs,
             $context,
             $this->config->getNodeDownloadUrl()
         );
@@ -103,8 +107,10 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
 
         // Validate Yarn
         if ($this->config->getYarnVersion() !== null) {
+
             $yarnInstaller = new YarnInstaller(
                 $this->io,
+                $fs,
                 $context
             );
 

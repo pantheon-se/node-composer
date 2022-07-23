@@ -62,6 +62,7 @@ class BinLinker
                 $this->generateBatchCode($from)
             );
         } else {
+            // Symlink into bin
             $this->filesystem->symlink($from, $to);
         }
     }
@@ -99,13 +100,17 @@ class BinLinker
      */
     public function unlinkBin(string $to): bool
     {
+        // Windows
         if ($this->osType === 'win') {
             if ($this->filesystem->exists($to . '.bat')) {
                 $this->filesystem->remove($to . '.bat');
                 return true;
             }
             return false;
-        } elseif ($this->filesystem->exists($to)) {
+        }
+
+        // Non-windows
+        if ($this->filesystem->exists($to)) {
             $this->filesystem->remove($to);
             return true;
         }
