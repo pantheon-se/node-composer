@@ -22,8 +22,6 @@ jobs:
           - ubuntu-latest
           - macOS-latest
         php:
-          - 7.2
-          - 7.3
           - 7.4
           - 8.0
           - 8.1
@@ -80,7 +78,10 @@ jobs:
               "config": {
                 "optimize-autoloader": true,
                 "sort-packages": true,
-                "bin-dir": "bin"
+                "bin-dir": "bin",
+                "allow-plugins": {
+                  "pantheon-se/node-composer": true
+                }
               }
             }
       - name: Trying to install test_app...
