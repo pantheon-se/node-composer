@@ -16,7 +16,6 @@ jobs:
       matrix:
         composer:
           - 2
-          - 1
         os:
           - windows-latest
           - ubuntu-latest
@@ -24,7 +23,8 @@ jobs:
           - 7.4
           - 8.0
           - 8.1
-    name: PHP ${{ matrix.php }}; Composer v${{ matrix.composer }}; ${{ matrix.os }}
+
+    name: PHP ${{ matrix.php }}; Composer ${{ matrix.composer }}; ${{ matrix.os }}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@master
