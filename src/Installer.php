@@ -52,17 +52,17 @@ class Installer implements InstallerInterface
      * @param IOInterface $io
      * @param RemoteFilesystem $remoteFs
      * @param NodeContext $context
-     * @param string|null $downloadUriTemplate
-     * @param null $installedCommand
-     * @param null $executableList
+     * @param string $downloadUriTemplate
+     * @param array $installedCommand
+     * @param array $executableList
      */
     public function __construct(
         IOInterface $io,
         RemoteFilesystem $remoteFs,
         NodeContext $context,
-        string $downloadUriTemplate = null,
-        $installedCommand = null,
-        $executableList = null
+        string $downloadUriTemplate = "",
+        array $installedCommand = [],
+        array $executableList = []
     )
     {
         // Setup
@@ -70,12 +70,11 @@ class Installer implements InstallerInterface
         $this->remoteFs = $remoteFs;
         $this->context = $context;
 
-        $this->downloadUriTemplate = is_string($downloadUriTemplate) ? $downloadUriTemplate :
-            'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
-
         // Unique values
-        $this->installedCommand = (!empty($installedCommand)) ? $installedCommand : ["node", "--version"];
+        $this->installedCommand = (!empty($installedCommand) && is_array($installedCommand)) ? $installedCommand : ["node", "--version"];
         $this->executableList = (!empty($executableList)) ? $executableList : [];
+        $this->downloadUriTemplate = !empty($downloadUriTemplate) ? $downloadUriTemplate :
+            'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
     }
 
     /**

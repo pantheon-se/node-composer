@@ -23,8 +23,6 @@ class NodeInstaller extends Installer
         NodeContext $context,
         string $downloadUriTemplate = null
     ) {
-        // Declare command to check if installed.
-        $installedCommand = ["node", "--version"];
 
         // Declare download template.
         $downloadUriTemplate = (!empty($downloadUriTemplate)) ? $downloadUriTemplate : 'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
@@ -42,6 +40,9 @@ class NodeInstaller extends Installer
                 'win' => 'npm.cmd',
             ]
         ];
+
+        // Declare command to check if installed.
+        $installedCommand = ["node", "--version"];
 
         // Initialize object.
         parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand, $executableList);
