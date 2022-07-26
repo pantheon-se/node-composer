@@ -1,4 +1,4 @@
-name: Tests
+name: Validation Tests
 
 on:
   push:
@@ -22,10 +22,11 @@ jobs:
           - ubuntu-latest
           - macOS-latest
         php:
-          - 7.1
           - 7.2
           - 7.3
           - 7.4
+          - 8.0
+          - 8.1
     name: PHP ${{ matrix.php }}; Composer v${{ matrix.composer }}; ${{ matrix.os }}
     steps:
       - name: Setup PHP
@@ -35,17 +36,22 @@ jobs:
           extensions: curl, json, mbstring, pcre
           ini-values: memory_limit=512M
           tools: composer:v${{ matrix.composer }}
+
       - name: Check PHP Version
         run: php -v
+
       - name: Checkout
         uses: actions/checkout@master
         with:
           path: main
+
       - name: Test simply package install (as not required; standalone)
         run: composer install --no-progress --no-dev --prefer-dist --optimize-autoloader
         working-directory: main
+
       - name: Creating test_app path for dummy project...
         run: mkdir test_app
+
       - name: Creating test_app/composer.json...
         uses: DamianReeves/write-file-action@v1.0
         with:
@@ -56,7 +62,7 @@ jobs:
               "name": "dummy/dummy",
               "description": "Dummy project to test if configuration works",
               "require": {
-                "mariusbuescher/node-composer": "@dev"
+                "pantheon-se/node-composer": "@dev"
               },
               "repositories": [
                 {
@@ -65,10 +71,9 @@ jobs:
                 }
               ],
               "extra": {
-                "mariusbuescher": {
+                "pantheon-se": {
                   "node-composer": {
-                    "node-version": "4.8.3",
-                    "yarn-version": "0.22.0"
+                    "yarn-version": true
                   }
                 }
               },
@@ -81,18 +86,22 @@ jobs:
       - name: Trying to install test_app...
         run: composer install --no-progress --no-dev --optimize-autoloader -vvv
         working-directory: test_app
+
       - name: Test if installed node is working... (Windows)
         run: node --version
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
+
       - name: Test if installed node is working... (Not Windows)
         run: node --version
         working-directory: ./test_app/bin
         if: matrix.os != 'windows-latest'
+
       - name: Test if installed yarn is working... (Windows)
         run: yarn --version
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
+
       - name: Test if installed yarn is working... (Not Windows)
         run: yarn --version
         working-directory: ./test_app/bin
