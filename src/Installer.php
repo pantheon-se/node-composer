@@ -27,7 +27,7 @@ class Installer implements InstallerInterface
      */
     protected $io;
     /**
-     * @var string[]
+     * @var array
      */
     private $installedCommand;
     /**
@@ -71,7 +71,7 @@ class Installer implements InstallerInterface
         $this->context = $context;
 
         // Unique values
-        $this->installedCommand = (!empty($installedCommand) && is_array($installedCommand)) ? $installedCommand : ["node", "--version"];
+        $this->installedCommand = (!empty($installedCommand)) ? $installedCommand : ["node", "--version"];
         $this->executableList = (!empty($executableList)) ? $executableList : [];
         $this->downloadUriTemplate = !empty($downloadUriTemplate) ? $downloadUriTemplate :
             'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';

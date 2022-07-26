@@ -16,19 +16,24 @@ Simply install the plugin, and the latest Node.js LTS with NPM will be installed
 
 ```json
 {
-    "name": "my/project",
-    "type": "project",
-    "license": "MIT",
-    "require": {
-        "pantheon-se/node-composer": "*"
-    },
-    "extra": {
-        "pantheon-se": {
-            "node-composer": {
-                "yarn-version": true
-            }
-        }
+  "name": "my/project",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "pantheon-se/node-composer": "*"
+  },
+  "extra": {
+    "pantheon-se": {
+      "node-composer": {
+        "yarn-version": true
+      }
     }
+  },
+  "config": {
+    "allow-plugins": {
+      "pantheon-se/node-composer": true
+    }
+  }
 }
 ```
 
@@ -50,14 +55,14 @@ In the Node download url, replace the following placeholders with your specific 
 
 ```json
 {
-    "extra": {
-        "pantheon-se": {
-            "node-composer": {
-                "node-version": "16.14.0",
-                "yarn-version": "1.22.18",
-                "node-download-url": "https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}"
-            }
-        }
+  "extra": {
+    "pantheon-se": {
+      "node-composer": {
+        "node-version": "16.14.0",
+        "yarn-version": "1.22.18",
+        "node-download-url": "https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}"
+      }
     }
+  }
 }
 ```

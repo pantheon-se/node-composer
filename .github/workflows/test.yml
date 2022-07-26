@@ -40,11 +40,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
         with:
-          path: main
+          path: test
 
       - name: Test simply package install (as not required; standalone)
         run: composer install --no-progress --no-dev --prefer-dist --optimize-autoloader
-        working-directory: main
+        working-directory: test
 
       - name: Creating test_app path for dummy project...
         run: mkdir test_app
@@ -64,7 +64,7 @@ jobs:
               "repositories": [
                 {
                   "type": "path",
-                  "url": "../main/"
+                  "url": "../test/"
                 }
               ],
               "extra": {
