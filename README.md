@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/packagist/l/pantheon-se/node-composer)](LICENSE) [![Packagist Version](https://img.shields.io/packagist/v/pantheon-se/node-composer)](https://packagist.org/packages/pantheon-se/node-composer) [![Tests](https://github.com/pantheon-se/node-composer/workflows/Tests/badge.svg?branch=master)](https://github.com/pantheon-se/node-composer/actions?query=workflow%3ATests)
+[![License](https://img.shields.io/packagist/l/pantheon-se/node-composer)](LICENSE) [![Packagist Version](https://img.shields.io/packagist/v/pantheon-se/node-composer)](https://packagist.org/packages/pantheon-se/node-composer) [![Tests](https://github.com/pantheon-se/node-composer/workflows/Tests/badge.svg?branch=2.x)](https://github.com/pantheon-se/node-composer/actions?query=workflow%3ATests)
 
 # Node Composer
 
