@@ -1,12 +1,12 @@
-name: Tests
+name: Validation Tests
 
 on:
   push:
     branches:
-      - master
+      - 2.x
   pull_request:
     branches:
-      - master
+      - 2.x
 
 jobs:
   run:
@@ -16,17 +16,15 @@ jobs:
       matrix:
         composer:
           - 2
-          - 1
         os:
           - windows-latest
           - ubuntu-latest
-          - macOS-latest
         php:
-          - 7.1
-          - 7.2
-          - 7.3
           - 7.4
-    name: PHP ${{ matrix.php }}; Composer v${{ matrix.composer }}; ${{ matrix.os }}
+          - 8.0
+          - 8.1
+
+    name: PHP ${{ matrix.php }}; Composer ${{ matrix.composer }}; ${{ matrix.os }}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@master
@@ -35,17 +33,22 @@ jobs:
           extensions: curl, json, mbstring, pcre
           ini-values: memory_limit=512M
           tools: composer:v${{ matrix.composer }}
+
       - name: Check PHP Version
         run: php -v
+
       - name: Checkout
         uses: actions/checkout@master
         with:
-          path: main
+          path: test
+
       - name: Test simply package install (as not required; standalone)
         run: composer install --no-progress --no-dev --prefer-dist --optimize-autoloader
-        working-directory: main
+        working-directory: test
+
       - name: Creating test_app path for dummy project...
         run: mkdir test_app
+
       - name: Creating test_app/composer.json...
         uses: DamianReeves/write-file-action@v1.0
         with:
@@ -56,43 +59,49 @@ jobs:
               "name": "dummy/dummy",
               "description": "Dummy project to test if configuration works",
               "require": {
-                "mariusbuescher/node-composer": "@dev"
+                "pantheon-se/node-composer": "@dev"
               },
               "repositories": [
                 {
                   "type": "path",
-                  "url": "../main/"
+                  "url": "../test/"
                 }
               ],
               "extra": {
-                "mariusbuescher": {
+                "pantheon-se": {
                   "node-composer": {
-                    "node-version": "4.8.3",
-                    "yarn-version": "0.22.0"
+                    "yarn-version": true
                   }
                 }
               },
               "config": {
                 "optimize-autoloader": true,
                 "sort-packages": true,
-                "bin-dir": "bin"
+                "bin-dir": "bin",
+                "allow-plugins": {
+                  "pantheon-se/node-composer": true
+                }
               }
             }
       - name: Trying to install test_app...
         run: composer install --no-progress --no-dev --optimize-autoloader -vvv
         working-directory: test_app
+
       - name: Test if installed node is working... (Windows)
         run: node --version
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
+
       - name: Test if installed node is working... (Not Windows)
         run: node --version
         working-directory: ./test_app/bin
         if: matrix.os != 'windows-latest'
+
       - name: Test if installed yarn is working... (Windows)
         run: yarn --version
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
+
       - name: Test if installed yarn is working... (Not Windows)
         run: yarn --version
         working-directory: ./test_app/bin
