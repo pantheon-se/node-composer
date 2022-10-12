@@ -57,6 +57,23 @@ class Config
     }
 
     /**
+     * @return Config
+     */
+    public static function fromNull(): Config
+    {
+        $self = new self();
+
+        $self->nodeVersion = $self->getNodeVersion();
+        $self->nodeDownloadUrl = $self->getNodeDownloadUrl();
+
+        if ($self->getNodeVersion() === null) {
+            throw new NodeComposerConfigException('You must specify a node-version');
+        }
+
+        return $self;
+    }
+
+    /**
      * @return string
      */
     public function getNodeVersion(): string

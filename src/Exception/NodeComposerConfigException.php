@@ -2,7 +2,9 @@
 
 namespace PantheonSalesEngineering\NodeComposer\Exception;
 
-class NodeComposerConfigException extends \RuntimeException
+use RuntimeException;
+
+class NodeComposerConfigException extends RuntimeException
 {
 
 }

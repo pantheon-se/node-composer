@@ -11,7 +11,6 @@ use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\Util\RemoteFilesystem;
 use PantheonSalesEngineering\NodeComposer\Exception\VersionVerificationException;
-use PantheonSalesEngineering\NodeComposer\Exception\NodeComposerConfigException;
 use PantheonSalesEngineering\NodeComposer\Installer\NodeInstaller;
 use PantheonSalesEngineering\NodeComposer\Installer\YarnInstaller;
 
@@ -42,7 +41,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         if (isset($extraConfig['pantheon-se']['node-composer'])) {
             $this->config = Config::fromArray($extraConfig['pantheon-se']['node-composer']);
         } else {
-            $this->config = Config::fromArray([]);
+            $this->config = Config::fromNull();
         }
     }
 
