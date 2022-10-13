@@ -65,6 +65,7 @@ class Installer implements InstallerInterface
         array $executableList = []
     )
     {
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         // Setup
         $this->io = $io;
         $this->remoteFs = $remoteFs;
@@ -95,10 +96,14 @@ class Installer implements InstallerInterface
      */
     public function isInstalled()
     {
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         $process = new Process($this->installedCommand, $this->context->getBinDir());
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         try {
             $process->mustRun();
             $output = explode("\n", $process->getIncrementalOutput());
+            $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+            print_r($output);
             return $output[0];
         } catch (ProcessFailedException $exception) {
             echo $exception->getMessage();
