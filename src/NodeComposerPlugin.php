@@ -41,7 +41,7 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         if (isset($extraConfig['pantheon-se']['node-composer'])) {
             $this->config = Config::fromArray($extraConfig['pantheon-se']['node-composer']);
         } else {
-            $this->config = Config::fromNull();
+            $this->config = new Config();
         }
     }
 

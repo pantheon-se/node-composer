@@ -33,7 +33,7 @@ class Config
     /**
      * Config constructor.
      */
-    private function __construct()
+    public function __construct()
     {
     }
 
@@ -48,23 +48,6 @@ class Config
         $self->nodeVersion = $conf['node-version'] ?? null;
         $self->nodeDownloadUrl = $conf['node-download-url'] ?? null;
         $self->yarnVersion = $conf['yarn-version'] ?? null;
-
-        if ($self->getNodeVersion() === null) {
-            throw new NodeComposerConfigException('You must specify a node-version');
-        }
-
-        return $self;
-    }
-
-    /**
-     * @return Config
-     */
-    public static function fromNull(): Config
-    {
-        $self = new self();
-
-        $self->nodeVersion = $self->getNodeVersion();
-        $self->nodeDownloadUrl = $self->getNodeDownloadUrl();
 
         if ($self->getNodeVersion() === null) {
             throw new NodeComposerConfigException('You must specify a node-version');
