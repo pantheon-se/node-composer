@@ -97,8 +97,8 @@ class Installer implements InstallerInterface
     {
         $process = new Process($this->installedCommand, $this->context->getBinDir());
         try {
-            $process->mustRun();
-            $output = explode("\n", $process->getIncrementalOutput());
+            $process->run();
+            $output = explode(PHP_EOL, $process->getIncrementalOutput());
             return $output[0];
         } catch (ProcessFailedException $exception) {
             echo $exception->getMessage();
