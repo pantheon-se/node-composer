@@ -82,9 +82,8 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         );
         $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
 
-        $nodeVersion = 'v' . $this->config->getNodeVersion();
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         $installedNodeVersion = $nodeInstaller->isInstalled();
+        $nodeVersion = 'v' . $this->config->getNodeVersion();
         $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         if (
             $installedNodeVersion === false ||
