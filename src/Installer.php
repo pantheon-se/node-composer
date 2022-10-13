@@ -101,9 +101,9 @@ class Installer implements InstallerInterface
         $process = new Process($this->installedCommand, $this->context->getBinDir());
         $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         try {
-            $process->mustRun();
+            $process->run();
             $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
-            $output = explode(PHP_EOL, $process->getOutput());
+            $output = explode(PHP_EOL, $process->getIncrementalOutput());
             $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
             print_r($output);
             return $output[0];
