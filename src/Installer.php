@@ -102,7 +102,8 @@ class Installer implements InstallerInterface
         $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         try {
             $process->mustRun();
-            $output = explode("\n", $process->getIncrementalOutput());
+            $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+            $output = explode(PHP_EOL, $process->getOutput());
             $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
             print_r($output);
             return $output[0];

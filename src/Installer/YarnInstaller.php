@@ -92,7 +92,7 @@ class YarnInstaller extends Installer
 
         try {
             $process->mustRun();
-            $output = explode("\n", $process->getIncrementalOutput());
+            $output = explode(PHP_EOL, $process->getOutput());
             return $output[0];
         } catch (ProcessFailedException $exception) {
             throw new RuntimeException(sprintf('npm must be installed: %s', $exception->getMessage()));
