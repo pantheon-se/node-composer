@@ -65,11 +65,12 @@ class Installer implements InstallerInterface
         array $executableList = []
     )
     {
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         // Setup
         $this->io = $io;
         $this->remoteFs = $remoteFs;
         $this->context = $context;
+
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
 
         // Unique values
         $this->installedCommand = (!empty($installedCommand)) ? $installedCommand : ["node", "--version"];
