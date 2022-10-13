@@ -70,8 +70,6 @@ class Installer implements InstallerInterface
         $this->remoteFs = $remoteFs;
         $this->context = $context;
 
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
-
         // Unique values
         $this->installedCommand = (!empty($installedCommand)) ? $installedCommand : ["node", "--version"];
         $this->executableList = (!empty($executableList)) ? $executableList : [];
@@ -97,15 +95,10 @@ class Installer implements InstallerInterface
      */
     public function isInstalled()
     {
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         $process = new Process($this->installedCommand, $this->context->getBinDir());
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         try {
             $process->run();
-            $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
-            $output = explode(PHP_EOL, $process->getIncrementalOutput());
-            $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
-            print_r($output);
+            $output = explode("\n", $process->getIncrementalOutput());
             return $output[0];
         } catch (ProcessFailedException $exception) {
             echo $exception->getMessage();

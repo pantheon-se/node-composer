@@ -37,13 +37,12 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
 
         $extraConfig = $this->composer->getPackage()->getExtra();
-        $io->write("Before config init");
+
         if (isset($extraConfig['pantheon-se']['node-composer'])) {
             $this->config = Config::fromArray($extraConfig['pantheon-se']['node-composer']);
         } else {
             $this->config = new Config();
         }
-        $io->write("After config init");
     }
 
     /**
@@ -66,13 +65,11 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
      */
     public function onPostUpdate(Event $event)
     {
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         $fs = new RemoteFilesystem($this->io, $this->composer->getConfig());
         $context = new NodeContext(
             $this->composer->getConfig()->get('vendor-dir'),
             $this->composer->getConfig()->get('bin-dir')
         );
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
 
         $nodeInstaller = new NodeInstaller(
             $this->io,
@@ -80,12 +77,10 @@ class NodeComposerPlugin implements PluginInterface, EventSubscriberInterface
             $context,
             $this->config->getNodeDownloadUrl()
         );
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
 
-        $nodeVersion = 'v' . $this->config->getNodeVersion();
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         $installedNodeVersion = $nodeInstaller->isInstalled();
-        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+        $nodeVersion = 'v' . $this->config->getNodeVersion();
+
         if (
             $installedNodeVersion === false ||
             strpos($installedNodeVersion, $nodeVersion) === false
