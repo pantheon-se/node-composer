@@ -23,7 +23,7 @@ class NodeInstaller extends Installer
         NodeContext $context,
         string $downloadUriTemplate = null
     ) {
-        print_r("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         // Declare download template.
         $downloadUriTemplate = (!empty($downloadUriTemplate)) ? $downloadUriTemplate : 'https://nodejs.org/dist/v${version}/node-v${version}-${osType}-${architecture}.${format}';
 
@@ -43,9 +43,9 @@ class NodeInstaller extends Installer
 
         // Declare command to check if installed.
         $installedCommand = ["node", "--version"];
-        print_r("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
         // Initialize object.
         parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand, $executableList);
-        print_r("Function: " . __FUNCTION__ . " Line: " . __LINE__);
+        $this->io->write("Function: " . __FUNCTION__ . " Line: " . __LINE__);
     }
 }
