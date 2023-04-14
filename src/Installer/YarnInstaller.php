@@ -88,7 +88,7 @@ class YarnInstaller extends Installer
      */
     private function getNpmBinaryPath(): string
     {
-        $process = new Process(['npm', 'bin'], $this->context->getBinDir());
+        $process = new Process(['npm', 'prefix'], $this->context->getBinDir());
 
         try {
             $process->run();
