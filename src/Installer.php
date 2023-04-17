@@ -264,7 +264,7 @@ class Installer implements InstallerInterface
     private function untar(string $source, string $targetDir)
     {
         $process = new Process(
-            ["tar", "-xvf", $source],
+            ["tar", "-xvf", $source, "--strip-components=1", "-C", $targetDir],
             $this->context->getVendorDir()
         );
         $process->run();

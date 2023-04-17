@@ -78,8 +78,6 @@ class YarnInstaller extends Installer
             throw new RuntimeException(sprintf('Could not install yarn: %s', $process->getErrorOutput()));
         }
 
-        $this->linkExecutables($sourceDir, $this->context->getBinDir());
-
         return true;
     }
 
