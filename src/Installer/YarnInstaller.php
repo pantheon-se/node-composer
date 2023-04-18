@@ -29,25 +29,11 @@ class YarnInstaller extends Installer
         // Declare command to check if installed.
         $installedCommand = ["yarn", "--version"];
 
-        // Setup paths for executables.
-        $executableList = [
-            'yarn' => [
-                'nix' => 'yarn',
-                'link' => 'yarn',
-                'win' => 'yarn.cmd',
-            ],
-            'yarnpkg' => [
-                'nix' => 'yarnpkg',
-                'link' => 'yarnpkg',
-                'win' => 'yarnpkg.cmd',
-            ]
-        ];
-
         // Empty template for yarn.
         $downloadUriTemplate = "";
 
         // Initialize object.
-        parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand, $executableList);
+        parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand);
     }
 
     /**
