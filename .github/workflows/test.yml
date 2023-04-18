@@ -8,6 +8,9 @@ on:
     branches:
       - 2.x
 
+env:
+  NODE_VERSION: "16.20.0"
+
 jobs:
   run:
     runs-on: ${{ matrix.os }}
@@ -72,6 +75,7 @@ jobs:
               "extra": {
                 "pantheon-se": {
                   "node-composer": {
+                    "node-version": "${{ env.NODE_VERSION }}"
                     "yarn-version": true
                   }
                 }
@@ -85,17 +89,18 @@ jobs:
                 }
               }
             }
+
       - name: Trying to install test_app...
         run: composer install --no-progress --no-dev --optimize-autoloader -vvv
         working-directory: test_app
 
       - name: Test if installed node is working... (Windows)
-        run: node --version
+        run: ./node.bat --version | Select-String -Pattern "${{ env.NODE_VERSION }}"
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
 
-      - name: Test if installed node is working... (Not Windows)
-        run: node --version
+      - name: Test if installed node is working... (Unix)
+        run: node --version | grep "${{ env.NODE_VERSION }}"
         working-directory: ./test_app/bin
         if: matrix.os != 'windows-latest'
 
@@ -104,7 +109,7 @@ jobs:
         working-directory: .\test_app\bin
         if: matrix.os == 'windows-latest'
 
-      - name: Test if installed yarn is working... (Not Windows)
+      - name: Test if installed yarn is working... (Unix)
         run: yarn --version
         working-directory: ./test_app/bin
         if: matrix.os != 'windows-latest'
