@@ -29,11 +29,25 @@ class YarnInstaller extends Installer
         // Declare command to check if installed.
         $installedCommand = ["yarn", "--version"];
 
+        // Setup paths for executables.
+        $executableList = [
+            'yarn' => [
+                'link' => 'yarn',
+                'nix' => '.bin/yarn',
+                'win' => '.bin\yarn.cmd',
+            ],
+            'yarnpkg' => [
+                'link' => 'yarnpkg',
+                'nix' => '.bin/yarnpkg',
+                'win' => '.bin\yarnpkg.cmd',
+            ]
+        ];
+
         // Empty template for yarn.
         $downloadUriTemplate = "";
 
         // Initialize object.
-        parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand);
+        parent::__construct($io, $remoteFs, $context, $downloadUriTemplate, $installedCommand, $executableList);
     }
 
     /**
@@ -44,7 +58,7 @@ class YarnInstaller extends Installer
     public function install(string $version): bool
     {
         $sourceDir = $this->getNpmBinaryPath();
-        $this->io->write('NPM found at: ' . $sourceDir, true, IOInterface::VERBOSE);
+        $this->io->write('npm found at: ' . $sourceDir, true, IOInterface::VERBOSE);
 
         $process = new Process(
             ['npm', 'install', 'yarn@'. $version],
@@ -64,10 +78,13 @@ class YarnInstaller extends Installer
             throw new RuntimeException(sprintf('Could not install yarn: %s', $process->getErrorOutput()));
         }
 
+        $sourceDir = $sourceDir . DIRECTORY_SEPARATOR . 'node_modules';
+        $this->linkExecutables($sourceDir, $this->context->getBinDir());
         return true;
     }
 
     /**
+     * Get path to npm binary directory.
      * @return string
      */
     private function getNpmBinaryPath(): string
