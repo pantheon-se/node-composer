@@ -33,13 +33,19 @@ Simply install the plugin, and the latest Node.js LTS with NPM will be installed
     "allow-plugins": {
       "pantheon-se/node-composer": true
     }
+  },
+  "scripts": {
+    "post-install-cmd": ["@build"],
+    "post-update-cmd": ["@build"],
+    "build": "cd web/themes/my_theme && yarn build"
   }
 }
 ```
 
 ## Configuration
 
-There are three parameters you can configure: 
+There are three parameters you can configure:
+
 - Node version (`node-version`)
 - Yarn version (`yarn-version`)
 - The download url template for the Node.js binary archives (`node-download-url`).
@@ -51,7 +57,7 @@ In the Node download url, replace the following placeholders with your specific 
 - system architecture: `${architecture}`
 - file format `${format}`
 
-**Example composer.json with specific versions of Node and Yarn** 
+**Example composer.json with specific versions of Node and Yarn**
 
 ```json
 {
