@@ -267,6 +267,9 @@ class Installer implements InstallerInterface
             ["tar", "-xvf", $source, "--strip-components=1", "-C", $targetDir],
             $this->context->getVendorDir()
         );
+        // Add 3 minute timeout
+        $process->setTimeout(180);
+        // Run Process
         $process->run();
 
         if (!$process->isSuccessful()) {
