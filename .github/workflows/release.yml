@@ -4,11 +4,12 @@ on:
     tags:
       - "v*"
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
+    workflows: ["Validation Tests"]
     steps:
       - uses: actions/checkout@v3
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          prerelease: false
