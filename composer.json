@@ -28,8 +28,8 @@
     },
     "require": {
         "php": ">=7.1",
-        "composer/composer": ">=2.0",
-        "composer-plugin-api": ">=2.0",
+        "composer/composer": ">=2",
+        "composer-plugin-api": ">=2",
         "symfony/process": ">=3.3",
         "ext-zip": "*",
         "ext-json": "*"
