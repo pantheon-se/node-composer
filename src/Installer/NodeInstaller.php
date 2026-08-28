@@ -21,7 +21,7 @@ class NodeInstaller extends Installer
         IOInterface $io,
         RemoteFilesystem $remoteFs,
         NodeContext $context,
-        string $downloadUriTemplate = null
+        ?string $downloadUriTemplate = null
     ) {
 
         // Declare download template.
