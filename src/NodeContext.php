@@ -35,8 +35,8 @@ class NodeContext
     public function __construct(
         string $vendorDir,
         string $binDir,
-        string $osType = null,
-        string $systemArchitecture = null
+        ?string $osType = null,
+        ?string $systemArchitecture = null
     ) {
         $this->vendorDir = $vendorDir;
         $this->binDir = $binDir;
